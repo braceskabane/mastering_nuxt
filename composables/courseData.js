@@ -11,7 +11,7 @@ export default {
           slug: '1-introduction-to-typescript-with-vue-js-3',
           number: 1,
           downloadUrl: 'https://vueschool.io/lessons/introduction-to-typescript-with-vue-js-3',
-          videoId: 684236333,
+          videoId: 'G_IjpeXxAkE', // YouTube video ID
           text: `In this lesson, we take a look at some of the benefits of using TypeScript with Vue.js 3.
 
 Improved error detection in your IDE and at build time
@@ -32,7 +32,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '2-setting-up-typescript',
           number: 1,
           downloadUrl: 'https://vueschool.io/lessons/setting-up-typescript',
-          videoId: 684236334,
+          videoId: 'ymqHMOD_NaE', // YouTube video ID
           text: 'Learn how to set up TypeScript in a Vue.js 3 project.',
         },
       ],

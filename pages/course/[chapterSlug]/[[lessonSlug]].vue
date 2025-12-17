@@ -6,16 +6,32 @@
     
     <h2 class="text-3xl font-bold mb-4">{{ lesson.title }}</h2>
     
-    <a 
-      v-if="lesson.downloadUrl"
-      :href="lesson.downloadUrl" 
-      target="_blank"
-      class="text-blue-600 hover:underline text-sm mb-6 inline-block"
-    >
-      Download Video
-    </a>
+    <div class="flex space-x-4 mb-8">
+      <a 
+        v-if="lesson.sourceUrl"
+        :href="lesson.sourceUrl" 
+        target="_blank"
+        class="font-normal text-md text-gray-500"
+      >
+        Download Source Code
+      </a>
+      
+      <a 
+        v-if="lesson.downloadUrl"
+        :href="lesson.downloadUrl" 
+        target="_blank"
+        class="font-normal text-md text-gray-500"
+      >
+        Download Video
+      </a>
+    </div>
     
-    <div class="prose max-w-none">
+    <VideoPlayer 
+      v-if="lesson.videoId"
+      :videoId="lesson.videoId"
+    />
+    
+    <div class="prose max-w-none mt-8">
       <p class="whitespace-pre-line">{{ lesson.text }}</p>
     </div>
   </div>
