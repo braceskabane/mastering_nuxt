@@ -4,7 +4,7 @@
       Lesson {{ chapter.number }} - {{ lesson.number }}
     </p>
     
-    <h2 class="text-3xl font-bold mb-4">{{ lesson.title }}</h2>
+    <h2 class="text-2xl font-bold mb-4">{{ lesson.title }}</h2>
     
     <div class="flex space-x-4 mb-8">
       <a 

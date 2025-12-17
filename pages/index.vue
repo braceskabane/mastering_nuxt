@@ -1,7 +1,7 @@
 <template>
   <div class="p-12 bg-gray-100 w-full h-full min-h-screen flex flex-col items-center">
     <div class="prose mb-12">
-      <h1 class="text-4xl">
+      <h1 class="text-1xl">
         <span class="font-medium">Course: </span>
         <span class="font-bold">Mastering Nuxt</span>
       </h1>
