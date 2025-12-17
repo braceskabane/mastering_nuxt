@@ -21,10 +21,14 @@
           <NuxtLink
             v-for="(lesson, index) in chapter.lessons"
             :key="lesson.slug"
-            :to="`/course/${chapter.slug}/${lesson.slug}`"
-            class="flex flex-row space-x-1 no-underline prose-sm font-normal text-gray-500"
+            :to="lesson.path"
+            :class="{
+              'text-blue-500': lesson.path === $route.path,
+              'text-gray-500': lesson.path !== $route.path
+            }"
+            class="flex flex-row space-x-1 no-underline prose-sm font-normal"
           >
-            <span class="text-gray-500">
+            <span>
               {{ index + 1 }}.
             </span>
             
@@ -43,3 +47,4 @@
 <script setup>
 const { chapters } = useCourse();
 </script>
+
