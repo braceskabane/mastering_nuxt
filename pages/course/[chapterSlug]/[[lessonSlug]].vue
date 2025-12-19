@@ -58,12 +58,21 @@ const chapter = computed(() => {
 
 const lesson = computed(() => {
   if (!chapter.value || !route.params.lessonSlug) return null;
+  
+  // Trigger error untuk testing
+  if (route.params.lessonSlug === '1-typescript-interfaces-for-vue-components') {
+    throw new Error(
+      route.params.paramthatdoesnotexistwhoops.capitalizeIsNotAMethod()
+    );
+  }
+  
   return chapter.value.lessons.find(
     (lesson) => lesson.slug === route.params.lessonSlug
   );
 });
 
 const title = computed(() => {
+  if (!lesson.value) return course.title;
   return `${lesson.value.title} - ${course.title}`;
 });
 useHead({

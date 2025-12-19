@@ -38,7 +38,7 @@
     <div class="prose p-12 bg-red-100 rounded-md w-[65ch]">
       <NuxtErrorBoundary>
         <NuxtPage />
-        <template #error="{ error, clearError }">
+        <template #error="{ error }">
           <p>
             Oh no, something went wrong with the lesson! 
             <code>{{ error }}</code>
@@ -46,7 +46,7 @@
           <p>
             <button
               class="hover:cursor-pointer bg-gray-500 text-white font-bold py-2 px-4 rounded mt-4"
-              @click="clearError()"
+              @click="resetError(error)"
               >
                 Reset
             </button>
@@ -63,5 +63,12 @@
 // });
 
 const { chapters } = useCourse();
+
+const resetError = async (error) => {
+  throw createError({
+    fatal: true,
+    message: 'Fatal error',
+  })
+};
 </script>
 
