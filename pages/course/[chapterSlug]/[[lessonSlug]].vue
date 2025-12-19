@@ -50,22 +50,29 @@
 const course = useCourse();
 const route = useRoute();
 
+if (
+  route.params.lessonSlug === '1-typescript-interfaces-for-vue-components'
+) {
+  console.log(
+    route.params.paramthatdoesnotexistwhoops.capitalizeIsNotAMethod()
+  );
+}
+
 const chapter = computed(() => {
   return course.chapters.find(
     (chapter) => chapter.slug === route.params.chapterSlug
   );
 });
 
+if(!chapter.value){
+  throw createError({
+    statusCode: 404,
+    message: 'Chapter not found',
+  });
+}
+
 const lesson = computed(() => {
   if (!chapter.value || !route.params.lessonSlug) return null;
-  
-  // Trigger error untuk testing
-  if (route.params.lessonSlug === '1-typescript-interfaces-for-vue-components') {
-    throw new Error(
-      route.params.paramthatdoesnotexistwhoops.capitalizeIsNotAMethod()
-    );
-  }
-  
   return chapter.value.lessons.find(
     (lesson) => lesson.slug === route.params.lessonSlug
   );
