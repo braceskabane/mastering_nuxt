@@ -11,6 +11,7 @@ export default {
           slug: '1-introduction-to-typescript-with-vue-js-3',
           number: 1,
           downloadUrl: 'https://vueschool.io/lessons/introduction-to-typescript-with-vue-js-3',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-1',
           videoId: 'G_IjpeXxAkE',
           text: `In this lesson, we take a look at some of the benefits of using TypeScript with Vue.js 3.
 
@@ -25,6 +26,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '1-basic-types-in-typescript',
           number: 2,
           downloadUrl: 'https://vueschool.io/lessons/basic-types-in-typescript',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-2',
           videoId: 'abc123def45',
           text: `Learn about the basic types in TypeScript and how they work with Vue.js 3.
 
@@ -38,6 +40,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '1-typescript-interfaces-for-vue-components',
           number: 3,
           downloadUrl: 'https://vueschool.io/lessons/typescript-interfaces-for-vue-components',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-3',
           videoId: 'xyz789ghi01',
           text: `Discover how to use TypeScript interfaces to define props and component structure in Vue.js 3.
 
@@ -58,6 +61,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '2-setting-up-typescript',
           number: 1,
           downloadUrl: 'https://vueschool.io/lessons/setting-up-typescript',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-4',
           videoId: 'ymqHMOD_NaE',
           text: 'Learn how to set up TypeScript in a Vue.js 3 project.',
         },
@@ -66,6 +70,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '2-configuring-tsconfig-for-vue-projects',
           number: 2,
           downloadUrl: 'https://vueschool.io/lessons/configuring-tsconfig-for-vue-projects',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-5',
           videoId: 'jkl234mno56',
           text: `Deep dive into tsconfig.json configuration for optimal Vue.js 3 development.
 
@@ -79,6 +84,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '2-typescript-with-vue-composition-api',
           number: 3,
           downloadUrl: 'https://vueschool.io/lessons/typescript-with-vue-composition-api',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-6',
           videoId: 'pqr789stu01',
           text: `Learn how to leverage TypeScript with Vue 3's Composition API for better type safety.
 
@@ -99,6 +105,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '3-advanced-typescript-types',
           number: 1,
           downloadUrl: 'https://vueschool.io/lessons/advanced-typescript-types',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-7',
           videoId: 'uvw123xyz45',
           text: `Explore advanced TypeScript types and how they can improve your Vue.js 3 applications.
 
@@ -112,6 +119,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '3-vue-router-with-typescript',
           number: 2,
           downloadUrl: 'https://vueschool.io/lessons/vue-router-with-typescript',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-8',
           videoId: 'def456ghi78',
           text: `Learn how to type Vue Router routes and navigation in your TypeScript Vue.js 3 projects.
 
@@ -125,6 +133,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '3-pinia-store-typing-patterns',
           number: 3,
           downloadUrl: 'https://vueschool.io/lessons/pinia-store-typing-patterns',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-9',
           videoId: 'jkl901mno23',
           text: `Master TypeScript integration with Pinia for type-safe state management in Vue.js 3.
 
@@ -145,6 +154,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '4-typescript-utility-types-in-vue',
           number: 1,
           downloadUrl: 'https://vueschool.io/lessons/typescript-utility-types-in-vue',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-10',
           videoId: 'nop456pqr78',
           text: `Learn how to use TypeScript's built-in utility types to enhance your Vue.js 3 components.
 
@@ -158,6 +168,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '4-testing-vue-components-with-typescript',
           number: 2,
           downloadUrl: 'https://vueschool.io/lessons/testing-vue-components-with-typescript',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-11',
           videoId: 'stu901vwx23',
           text: `Write type-safe tests for your Vue.js 3 components using TypeScript.
 
@@ -171,6 +182,7 @@ We also answer the question: "Are there any cases when you wouldn't want to use 
           slug: '4-performance-optimization-with-typescript',
           number: 3,
           downloadUrl: 'https://vueschool.io/lessons/performance-optimization-with-typescript',
+          sourceUrl: 'https://github.com/vueschool/typescript-vue3-course/tree/main/lesson-12',
           videoId: 'yzab45cde67',
           text: `Optimize your Vue.js 3 application performance using TypeScript features.
 

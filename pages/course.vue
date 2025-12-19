@@ -35,14 +35,33 @@
         </NuxtLink>
       </div>
     </div>
-
     <div class="prose p-12 bg-red-100 rounded-md w-[65ch]">
-      <NuxtPage />
+      <NuxtErrorBoundary>
+        <NuxtPage />
+        <template #error="{ error, clearError }">
+          <p>
+            Oh no, something went wrong with the lesson! 
+            <code>{{ error }}</code>
+          </p>
+          <p>
+            <button
+              class="hover:cursor-pointer bg-gray-500 text-white font-bold py-2 px-4 rounded mt-4"
+              @click="clearError()"
+              >
+                Reset
+            </button>
+          </p>
+        </template>
+      </NuxtErrorBoundary>
     </div>
   </div>
 </template>
 
 <script setup>
+// definePageMeta({
+//   layout: 'custom',
+// });
+
 const { chapters } = useCourse();
 </script>
 
