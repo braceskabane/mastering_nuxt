@@ -6,7 +6,12 @@
     />
     <div class="text-right">
       <div class="font-medium">{{ name }}</div>
-      <button class="text-sm underline text-slate-500">Log Out</button>
+      <button 
+        @click="logout" 
+        class="text-sm underline text-slate-500 hover:text-red-600 transition"
+      >
+        Log Out
+      </button>
     </div>
   </div>
 </template>
@@ -15,6 +20,8 @@
 import { computed } from "vue";
 
 const user = useSupabaseUser();
+const supabase = useSupabaseClient();
+const router = useRouter();
 
 const name = computed(() => {
   // GitHub OAuth provides: user_name, preferred_username
@@ -28,4 +35,24 @@ const name = computed(() => {
 });
 
 const profile = computed(() => user.value?.user_metadata?.avatar_url);
+
+const logout = async () => {
+  try {
+    console.log("🚪 Logging out...");
+    
+    // Sign out from Supabase (this will clear session from localStorage)
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      console.error("❌ Logout error:", error.message);
+    } else {
+      console.log("✅ Logged out successfully");
+    }
+    
+    // Navigate to login page
+    await router.push("/login");
+  } catch (error) {
+    console.error("❌ Logout failed:", error);
+  }
+};
 </script>
