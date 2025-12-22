@@ -38,8 +38,15 @@ onMounted(async () => {
         console.log("✅ Session established:", data.session.user.email);
         console.log("👤 User metadata:", data.session.user.user_metadata);
 
-        // Redirect to index page
-        await router.push("/");
+        // Check if there's a redirectTo query parameter from login middleware
+        const redirectTo = new URLSearchParams(window.location.search).get(
+          "redirectTo"
+        );
+
+        // Redirect to the intended page or index
+        const destination = redirectTo || "/";
+        console.log(`🎯 Redirecting to: ${destination}`);
+        await router.push(destination);
       } else {
         console.log("⚠️ No session created");
         await router.push("/login");

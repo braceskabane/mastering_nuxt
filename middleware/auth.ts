@@ -1,6 +1,18 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-  if (to.params.chapterSlug === "1-chapter-1") {
+export default defineNuxtRouteMiddleware(async (to, from) => {
+  const supabase = useSupabaseClient();
+
+  // Check session directly (synchronous check from localStorage)
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // Allow access if:
+  // 1. User has valid session (logged in)
+  // 2. OR accessing chapter 1 (free chapter)
+  if (session?.user || to.params.chapterSlug === "1-chapter-1") {
     return;
   }
-  return navigateTo("/login");
+
+  // Setelah user login di halaman /login, mereka akan otomatis di-redirect ke halaman yang sebelumnya mereka coba akses!
+  return navigateTo(`/login?redirectTo=${to.path}`);
 });
