@@ -10,6 +10,8 @@
     "preview": "nuxt preview"
   },
   "dependencies": {
+    "@nuxtjs/supabase": "^2.0.3",
+    "@supabase/supabase-js": "^2.89.0",
     "@vueuse/core": "^14.1.0",
     "@vueuse/nuxt": "^14.1.0",
     "nuxt": "^3.14.0",
