@@ -3,7 +3,7 @@
     <div class="mb-4 flex justify-between items-center w-full">
       <h1 class="text-3xl">
         <span class="font-medium">Course: </span>
-        <span class="font-bold">{{ title }}</span>
+        <span class="font-bold">{{ course.title }}</span>
       </h1>
       <UserCard />
     </div>
@@ -65,12 +65,20 @@
 //   layout: 'custom',
 // });
 
-const { chapters, title } = useCourse();
+// const { chapters, title } = useCourse();
+
+// const resetError = async (error) => {
+//   throw createError({
+//     fatal: true,
+//     message: "Fatal error",
+//   });
+// };
+
+const course = await useCourse();
+const firstLesson = await useFirstLesson();
 
 const resetError = async (error) => {
-  throw createError({
-    fatal: true,
-    message: "Fatal error",
-  });
+  await navigateTo(firstLesson.path);
+  error.value = null;
 };
 </script>

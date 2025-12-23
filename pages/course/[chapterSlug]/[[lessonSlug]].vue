@@ -42,14 +42,14 @@
 </template>
 
 <script setup>
-const course = useCourse();
+const course = await useCourse();
 const route = useRoute();
 const { chapterSlug, lessonSlug } = route.params;
 const lesson = await useLesson(chapterSlug, lessonSlug);
 
 // Validation function - separated dari middleware
-function validateLessonRoute({ params }, from) {
-  const course = useCourse();
+async function validateLessonRoute({ params }, from) {
+  const course = await useCourse();
 
   const chapter = course.chapters.find(
     (chapter) => chapter.slug === params.chapterSlug
@@ -91,7 +91,7 @@ if (route.params.lessonSlug === "1-typescript-interfaces-for-vue-components") {
 }
 
 const chapter = computed(() => {
-  return course.chapters.find(
+  return course.value.chapters.find(
     (chapter) => chapter.slug === route.params.chapterSlug
   );
 });
@@ -111,8 +111,8 @@ if (!chapter.value) {
 // });
 
 const title = computed(() => {
-  if (!lesson.value) return course.title;
-  return `${lesson.value.title} - ${course.title}`;
+  if (!lesson.value) return course.value.title;
+  return `${lesson.value.title} - ${course.value.title}`;
 });
 useHead({
   title,
