@@ -1,45 +1,19 @@
-import courseData from './courseData.js';
-
-type Lesson = {
-  title: string;
-  slug: string;
-  number: number;
-  downloadUrl: string;
-  videoId: string;
-  text: string;
-  sourceUrl: string;
-  path: string;
-};
-
-type Chapter = {
-  title: string;
-  lessons: Lesson[];
-  slug: string;
-  number: number;
-};
-
-type Course = {
-  title: string;
-  chapters: Chapter[];
-};
+import type { Lesson, LessonWithPath, Chapter, Course } from "~/types/course";
+import courseData from "./courseData.js";
 
 export const useCourse = (): Course => {
-    const chapters: Chapter[] = courseData.chapters.map(
-        (chapter) => {
-            const lessons: Lesson[] = chapter.lessons.map(
-                (lesson) => ({
-                    ...lesson,
-                    path: `/course/${chapter.slug}/${lesson.slug}`,
-                })
-            );
-            return {
-                ...chapter,
-                lessons,
-            };
-        }
-    );
+  const chapters: Chapter[] = courseData.chapters.map((chapter: Chapter) => {
+    const lessons: LessonWithPath[] = chapter.lessons.map((lesson: Lesson) => ({
+      ...lesson,
+      path: `/course/${chapter.slug}/${lesson.slug}`,
+    }));
     return {
-      ...courseData,
-      chapters,
+      ...chapter,
+      lessons,
     };
+  });
+  return {
+    ...courseData,
+    chapters,
+  };
 };

@@ -44,6 +44,8 @@
 <script setup>
 const course = useCourse();
 const route = useRoute();
+const { chapterSlug, lessonSlug } = route.params;
+const lesson = await useLesson(chapterSlug, lessonSlug);
 
 // Validation function - separated dari middleware
 function validateLessonRoute({ params }, from) {
@@ -101,12 +103,12 @@ if (!chapter.value) {
   });
 }
 
-const lesson = computed(() => {
-  if (!chapter.value || !route.params.lessonSlug) return null;
-  return chapter.value.lessons.find(
-    (lesson) => lesson.slug === route.params.lessonSlug
-  );
-});
+// const lesson = computed(() => {
+//   if (!chapter.value || !route.params.lessonSlug) return null;
+//   return chapter.value.lessons.find(
+//     (lesson) => lesson.slug === route.params.lessonSlug
+//   );
+// });
 
 const title = computed(() => {
   if (!lesson.value) return course.title;
