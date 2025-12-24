@@ -2,18 +2,6 @@ import type { CourseMeta, OutlineChapter, OutlineLesson } from "~/types/course";
 import course from "~/server/courseData";
 
 export default defineEventHandler((event): CourseMeta => {
-  // Return course structure from static data
-  const outlineChapters: OutlineChapter[] = course.chapters.map((chapter) => ({
-    id: chapter.id,
-    slug: chapter.slug,
-    title: chapter.title,
-    lessons: (chapter.lessons as unknown as any[]).map((lesson) => ({
-      id: lesson.id,
-      slug: lesson.slug,
-      title: lesson.title,
-    })) as OutlineLesson[],
-  }));
-
   if (!course) {
     throw createError({
       statusCode: 404,
@@ -36,6 +24,7 @@ export default defineEventHandler((event): CourseMeta => {
       lessons,
     };
   });
+
   return {
     title: course.title,
     chapters: outline,

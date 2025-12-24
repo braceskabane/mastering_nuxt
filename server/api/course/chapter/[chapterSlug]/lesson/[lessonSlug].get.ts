@@ -1,34 +1,77 @@
-import type { LessonWithPath } from "~/types/course";
-import course from "~/server/courseData";
+// import type { LessonWithPath } from "~/types/course";
+// import course from "~/server/courseData";
 
-export default defineEventHandler((event): LessonWithPath => {
+// export default defineEventHandler((event): LessonWithPath => {
+//   const { chapterSlug, lessonSlug } = event.context.params as {
+//     chapterSlug: string;
+//     lessonSlug: string;
+//   };
+
+//   const chapter = course.chapters.find((ch) => ch.slug === chapterSlug);
+
+//   if (!chapter) {
+//     throw createError({
+//       statusCode: 404,
+//       statusMessage: "Chapter not found",
+//     });
+//   }
+
+//   const lesson = chapter.lessons.find((lesson) => lesson.slug === lessonSlug);
+
+//   if (!lesson) {
+//     throw createError({
+//       statusCode: 404,
+//       statusMessage: "Lesson not found",
+//     });
+//   }
+
+//   return {
+//     ...lesson,
+//     path: `/course/chapter/${chapter.slug}/lesson/${lesson.slug}`,
+//   };
+// });
+
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+export default defineEventHandler(async (event) => {
   const { chapterSlug, lessonSlug } = event.context.params as {
     chapterSlug: string;
     lessonSlug: string;
   };
 
-  // Find chapter by slug from static data
-  const chapter = course.chapters.find((ch) => ch.slug === chapterSlug);
+  // return prisma.lesson.findFirst();
 
-  if (!chapter) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Chapter not found",
-    });
-  }
+  // return prisma.lesson.findMany({
+  //   where: {
+  //     Chapter: {
+  //       slug: chapterSlug,
+  //     },
+  //   },
+  //   // select: {
+  //   //   slug: true,
+  //   // },
+  //   include: {
+  //     Chapter: true,
+  //   },
+  // });
 
-  // Find lesson by slug within the chapter
-  const lesson = chapter.lessons.find((lesson) => lesson.slug === lessonSlug);
-
-  if (!lesson) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Lesson not found",
-    });
-  }
-
-  return {
-    ...lesson,
-    path: `/course/chapter/${chapter.slug}/lesson/${lesson.slug}`,
-  };
+  return prisma.lesson.findFirst({
+    where: {
+      Chapter: {
+        slug: chapterSlug,
+      },
+    },
+    // select: {
+    //   slug: true,
+    // },
+    include: {
+      Chapter: {
+        select: {
+          slug: true,
+          title: true,
+        },
+      },
+    },
+  });
 });
