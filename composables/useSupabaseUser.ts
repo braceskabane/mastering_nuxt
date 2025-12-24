@@ -14,7 +14,10 @@ export const useSupabaseUser = () => {
       } = await supabase.auth.getUser();
 
       if (error) {
-        console.error("❌ Auth error:", error.message);
+        // Tidak log error jika hanya session missing (user belum login)
+        if (error.message !== "Auth session missing!") {
+          console.error("❌ Auth error:", error.message);
+        }
         return;
       }
 

@@ -38,9 +38,9 @@
         </div>
       </div>
       <div class="prose p-12 bg-red-100 rounded-md w-[65ch]">
-        <NuxtErrorBoundary>
+        <NuxtErrorBoundary @error="onError">
           <NuxtPage />
-          <template #error="{ error }">
+          <template #error="{ error, clearError }">
             <p>
               Oh no, something went wrong with the lesson!
               <code>{{ error }}</code>
@@ -48,7 +48,7 @@
             <p>
               <button
                 class="hover:cursor-pointer bg-gray-500 text-white font-bold py-2 px-4 rounded mt-4"
-                @click="resetError(error)"
+                @click="clearError({ redirect: firstLesson.path })"
               >
                 Reset
               </button>
@@ -61,24 +61,12 @@
 </template>
 
 <script setup>
-// definePageMeta({
-//   layout: 'custom',
-// });
-
-// const { chapters, title } = useCourse();
-
-// const resetError = async (error) => {
-//   throw createError({
-//     fatal: true,
-//     message: "Fatal error",
-//   });
-// };
-
 const course = await useCourse();
 const firstLesson = await useFirstLesson();
 
-const resetError = async (error) => {
-  await navigateTo(firstLesson.path);
-  error.value = null;
+const chapters = computed(() => course.value.chapters);
+
+const onError = (error) => {
+  console.error("Lesson error:", error);
 };
 </script>

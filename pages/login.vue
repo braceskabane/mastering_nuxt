@@ -18,7 +18,8 @@ const user = useSupabaseUser();
 
 watchEffect(async () => {
   if (user.value) {
-    await navigateTo(query.redirectTo as string, {
+    const redirectPath = (query.redirectTo as string) || "/";
+    await navigateTo(redirectPath, {
       replace: true,
     });
   }

@@ -9,7 +9,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // Allow access if:
   // 1. User has valid session (logged in)
   // 2. OR accessing chapter 1 (free chapter)
-  if (session?.user || to.params.chapterSlug === "1-chapter-1") {
+  // 3. OR in development mode (disable auth for testing)
+  if (session?.user || to.params.chapterSlug === "1-chapter-1" || process.dev) {
     return;
   }
 

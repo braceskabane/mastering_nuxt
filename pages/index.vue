@@ -1,12 +1,13 @@
 <template>
   <NuxtLink
+    v-if="firstLesson"
     class="text-blue-500 underline font-medium"
-    :href="firstLesson.path"
+    :to="firstLesson.path"
   >
     Go to First Lesson
   </NuxtLink>
 </template>
 
 <script setup lang="ts">
-const firstLesson = useFirstLesson();
+const firstLesson = await useFirstLesson();
 </script>
