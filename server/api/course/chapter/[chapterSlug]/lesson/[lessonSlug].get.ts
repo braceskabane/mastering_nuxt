@@ -1,21 +1,14 @@
 import type { LessonWithPath } from "~/types/course";
-import { PrismaClient } from "~/server/utils/prisma/client";
+import course from "~/server/courseData";
 
-const prisma = new PrismaClient();
-
-export default defineEventHandler(async (event): Promise<LessonWithPath> => {
+export default defineEventHandler((event): LessonWithPath => {
   const { chapterSlug, lessonSlug } = event.context.params as {
     chapterSlug: string;
     lessonSlug: string;
   };
 
-  // Find chapter by slug
-  const chapter = await prisma.chapter.findUnique({
-    where: { slug: chapterSlug },
-    include: {
-      lessons: true,
-    },
-  });
+  // Find chapter by slug from static data
+  const chapter = course.chapters.find((ch) => ch.slug === chapterSlug);
 
   if (!chapter) {
     throw createError({

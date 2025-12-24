@@ -1,22 +1,18 @@
 import type { CourseMeta, OutlineChapter, OutlineLesson } from "~/types/course";
-import { PrismaClient } from "~/server/utils/prisma/client";
+import course from "~/server/courseData";
 
-const prisma = new PrismaClient();
-
-export default defineEventHandler(async (event): Promise<CourseMeta> => {
-  // Fetch course data from Supabase via Prisma
-  const course = await prisma.course.findFirst({
-    include: {
-      chapters: {
-        include: {
-          lessons: true,
-        },
-        orderBy: {
-          number: "asc",
-        },
-      },
-    },
-  });
+export default defineEventHandler((event): CourseMeta => {
+  // Return course structure from static data
+  const outlineChapters: OutlineChapter[] = course.chapters.map((chapter) => ({
+    id: chapter.id,
+    slug: chapter.slug,
+    title: chapter.title,
+    lessons: (chapter.lessons as unknown as any[]).map((lesson) => ({
+      id: lesson.id,
+      slug: lesson.slug,
+      title: lesson.title,
+    })) as OutlineLesson[],
+  }));
 
   if (!course) {
     throw createError({
