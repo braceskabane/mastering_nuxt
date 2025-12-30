@@ -44,8 +44,8 @@
 <script setup>
 const course = await useCourse();
 const route = useRoute();
-const { chapterSlug, lessonSlug } = route.params;
-const lesson = await useLesson(chapterSlug, lessonSlug);
+let { chapterSlug, lessonSlug } = route.params;
+let lesson = await useLesson(chapterSlug, lessonSlug);
 
 // Validation function - separated dari middleware
 async function validateLessonRoute({ params }, from) {

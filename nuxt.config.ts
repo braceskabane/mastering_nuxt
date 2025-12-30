@@ -2,15 +2,13 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@vueuse/nuxt", "@nuxtjs/tailwindcss"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@vueuse/nuxt",
+    ["@nuxtjs/supabase", { redirect: false }],
+  ],
   css: ["~/assets/css/main.css"],
   nitro: {
     preset: "netlify",
-  },
-  runtimeConfig: {
-    public: {
-      supabaseUrl: process.env.SUPABASE_URL,
-      supabaseKey: process.env.SUPABASE_KEY,
-    },
   },
 });

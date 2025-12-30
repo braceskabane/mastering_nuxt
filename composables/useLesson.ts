@@ -1,10 +1,11 @@
-import { StorageSerializers } from "@vueuse/core";
+// import { StorageSerializers } from "@vueuse/core";
 import type { LessonWithPath } from "~/types/course";
 
-export default async (chapterSlug: string, lessonSlug: string) =>
-  useFetchWithCache<LessonWithPath>(
+export default async (chapterSlug: string, lessonSlug: string) => {
+  return useFetchWithCache<LessonWithPath>(
     "/api/course/chapter/" + chapterSlug + "/lesson/" + lessonSlug
   );
+};
 
 //   const { data, error } = await useFetch(
 //     `/api/course/chapter/${chapterSlug}/lesson/${lessonSlug}`

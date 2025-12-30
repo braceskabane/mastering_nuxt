@@ -23,8 +23,7 @@ export default async <T>(url: string) => {
 
   if (!cached.value) {
     const { data, error, pending } = await useLazyFetch<T>(url, {
-      //   pick: ["title", "number"], // semua field lain dibuang ini bukan error tapi data kosong
-      //   lazy: true,
+      headers: useRequestHeaders(["cookie"]),
     });
     if (error.value) {
       throw createError({

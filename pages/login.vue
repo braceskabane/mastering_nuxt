@@ -27,17 +27,31 @@ watchEffect(async () => {
 
 const login = async () => {
   // OAuth redirect ke callback (bukan ke redirectTo langsung)
-  const { data, error } = await supabase.auth.signInWithOAuth({
+  // const { data, error } = await supabase.auth.signInWithOAuth({
+  //   provider: "github",
+  //   options: {
+  //     redirectTo: `${window.location.origin}/auth/callback`,
+  //   },
+  // });
+
+  // if (error) {
+  //   console.error("Error during login:", error.message);
+  // } else {
+  //   console.log("Login initiated:", data);
+  // }
+  const redirectTo = query.redirectTo
+    ? `${window.location.origin}/login?redirectTo=${query.redirectTo}`
+    : window.location.origin;
+
+  const { error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo,
     },
   });
 
   if (error) {
-    console.error("Error during login:", error.message);
-  } else {
-    console.log("Login initiated:", data);
+    console.error(error);
   }
 };
 </script>

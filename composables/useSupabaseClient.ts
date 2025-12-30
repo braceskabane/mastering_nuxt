@@ -1,27 +1,29 @@
-// composables/useSupabaseClient.ts
-import { createClient } from "@supabase/supabase-js";
+// // composables/useSupabaseClient.ts
+// import { createClient } from "@supabase/supabase-js";
 
-export const useSupabaseClient = () => {
-  const config = useRuntimeConfig();
+// export const useSupabaseClient = () => {
+//   const config = useRuntimeConfig();
 
-  const supabaseUrl = config.public.supabaseUrl;
-  const supabaseKey = config.public.supabaseKey;
+//   const supabaseUrl = config.public.supabaseUrl;
+//   const supabaseKey = config.public.supabaseKey;
 
-  // Pastikan URL dan Key Supabase tersedia
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error("Supabase URL or Key is missing in configuration");
-  }
+//   // Pastikan URL dan Key Supabase tersedia
+//   if (!supabaseUrl || !supabaseKey) {
+//     throw new Error("Supabase URL or Key is missing in configuration");
+//   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: {
-      // storage: Gunakan localStorage browser untuk menyimpan sesi
-      // autoRefreshToken: Otomatis refresh token saat hampir expired
-      // persistSession: Pertahankan sesi meski browser ditutup
-      storage: typeof window !== "undefined" ? window.localStorage : undefined,
-      autoRefreshToken: true,
-      persistSession: true,
-    },
-  });
+//   const supabase = createClient(supabaseUrl, supabaseKey, {
+//     auth: {
+//       // storage: Gunakan localStorage browser untuk menyimpan sesi
+//       // autoRefreshToken: Otomatis refresh token saat hampir expired
+//       // persistSession: Pertahankan sesi meski browser ditutup
+//       storage: typeof window !== "undefined" ? window.localStorage : undefined,
+//       autoRefreshToken: true,
+//       persistSession: true,
+//     },
+//   });
 
-  return supabase;
-};
+//   return supabase;
+// };
+
+// konflik antara custom useSupabaseClient() composable dengan @nuxtjs/supabase module yang juga provide useSupabaseClient().

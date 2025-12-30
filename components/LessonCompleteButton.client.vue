@@ -1,14 +1,6 @@
 <template>
   <label
-    class="
-      mt-6
-      inline-flex items-center justify-center
-      px-4 py-2 rounded-lg
-      font-semibold text-sm
-      cursor-pointer select-none
-      transition-all duration-200
-      border
-    "
+    class="mt-6 inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold text-sm cursor-pointer select-none transition-all duration-200 border"
     :class="
       modelValue
         ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700'
@@ -22,7 +14,7 @@
       @input="$emit('update:modelValue', $event.target.checked)"
     />
 
-    {{ modelValue ? 'Completed!' : 'Mark as complete' }}
+    {{ modelValue ? "Completed!" : "Mark as complete" }}
   </label>
 </template>
 
@@ -32,13 +24,13 @@ defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
-defineEmits(['update:modelValue'])
+defineEmits(["update:modelValue"]);
 </script>
 
 <style scoped>
 ::selection {
-    display: none;
+  display: none;
 }
 </style>
