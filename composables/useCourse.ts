@@ -19,4 +19,14 @@
 // };
 import type { CourseOutline } from "~/server/api/course/meta.get";
 
-export default async () => useFetchWithCache<CourseOutline>("/api/course/meta");
+export default async () => {
+  try {
+    console.log("📖 Fetching course data...");
+    const data = await useFetchWithCache<CourseOutline>("/api/course/meta");
+    console.log("✅ Course data loaded:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ Error fetching course:", error);
+    throw error;
+  }
+};

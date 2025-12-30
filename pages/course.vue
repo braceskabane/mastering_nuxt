@@ -44,7 +44,6 @@
           </NuxtLink>
         </div>
         <div
-          v-if="percentageCompleted"
           class="mt-8 text-sm font-medium text-gray-500 flex justify-between"
         >
           Course completion:
@@ -53,7 +52,7 @@
       </div>
 
       <div class="prose p-12 bg-red-100 rounded-md w-[65ch]">
-        <NuxtErrorBoundary @error="onError">
+        <NuxtErrorBoundary>
           <NuxtPage />
           <template #error="{ error }">
             <p>

@@ -78,14 +78,20 @@ export type CourseOutline = Omit<
 };
 
 export default defineEventHandler(async (): Promise<CourseOutline> => {
+  console.log("📍 Fetching course metadata...");
   const outline = await prisma.course.findFirst(courseSelect);
 
   if (!outline) {
+    console.error("❌ No course found");
     throw createError({
       statusCode: 404,
       statusMessage: "Course not found",
     });
   }
+
+  console.log(
+    `✅ Course found: ${outline.title}, chapters: ${outline.chapters.length}`
+  );
 
   const chapters = outline.chapters.map((chapter) => ({
     ...chapter,
@@ -94,6 +100,9 @@ export default defineEventHandler(async (): Promise<CourseOutline> => {
       path: `/course/chapter/${chapter.slug}/lesson/${lesson.slug}`,
     })),
   }));
+
+  console.log(`📊 Response: ${chapters.length} chapters with paths generated`);
+  console.log("🔍 First lesson path:", chapters[0]?.lessons[0]?.path);
 
   return {
     ...outline,

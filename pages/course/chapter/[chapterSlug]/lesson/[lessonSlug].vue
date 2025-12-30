@@ -43,14 +43,14 @@
 </template>
 
 <script setup>
-import { courseProgress } from "~/stores/courseProgress.ts";
+import { useCourseProgress } from "~/stores/courseProgress";
 
 const course = await useCourse();
 const user = useSupabaseUser();
 const route = useRoute();
 const { chapterSlug, lessonSlug } = route.params;
 const lesson = await useLesson(chapterSlug, lessonSlug);
-const store = courseProgress();
+const store = useCourseProgress();
 const { initialize, toggleComplete } = store;
 
 initialize();
@@ -60,7 +60,17 @@ definePageMeta({
     async function ({ params }, form) {
       const course = await useCourse();
 
-      const chapter = course.value.chapters.find(
+      // course is now raw data, not a ref
+      if (!course || !course.chapters) {
+        return abortNavigation(
+          createError({
+            statusCode: 404,
+            message: "Course not found",
+          })
+        );
+      }
+
+      const chapter = course.chapters.find(
         (chapter) => chapter.slug === params.chapterSlug
       );
 
@@ -132,14 +142,15 @@ const isCompleted = computed(() => {
 });
 
 const chapter = computed(() => {
-  return course.value.chapters.find(
+  if (!course || !course.chapters) return null;
+  return course.chapters.find(
     (chapter) => chapter.slug === route.params.chapterSlug
   );
 });
 
 const title = computed(() => {
-  if (!lesson.value) return course.value.title;
-  return `${lesson.value.title} - ${course.value.title}`;
+  if (!lesson || !lesson.value) return course?.title || "Lesson";
+  return `${lesson.value.title} - ${course?.title || "Course"}`;
 });
 useHead({
   title,
