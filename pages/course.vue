@@ -77,11 +77,19 @@
 <script setup>
 import { useCourseProgress } from "~/stores/courseProgress";
 import { storeToRefs } from "pinia";
+
 const user = useSupabaseUser();
 const course = await useCourse();
 const firstLesson = await useFirstLesson();
 
-const { percentageCompleted } = storeToRefs(useCourseProgress());
+const courseProgressStore = useCourseProgress();
+const { percentageCompleted } = storeToRefs(courseProgressStore);
+
+// Initialize store to load user progress from database
+await courseProgressStore.initialize();
+
+// Pass course data to store for accurate per-chapter percentage calculation
+courseProgressStore.setCourseData(course);
 
 const resetError = async (error) => {
   await navigateTo(firstLesson.path);
