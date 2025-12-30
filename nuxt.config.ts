@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@vueuse/nuxt",
     ["@nuxtjs/supabase", { redirect: false }],
+    "@pinia/nuxt",
   ],
   css: ["~/assets/css/main.css"],
   nitro: {

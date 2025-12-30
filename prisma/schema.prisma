@@ -25,21 +25,34 @@ model Chapter {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   lessons   Lesson[]
-  course    Course   @relation(fields: [courseId], references: [id])
+  Course    Course   @relation(fields: [courseId], references: [id])
   courseId  Int
 }
 
 model Lesson {
-  id          Int      @id @default(autoincrement())
-  title       String
-  slug        String   @unique
-  number      Int
-  downloadUrl String
-  videoId     String
-  text        String
-  sourceUrl   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  Chapter     Chapter? @relation(fields: [chapterId], references: [id])
-  chapterId   Int?
+  id               Int              @id @default(autoincrement())
+  title            String
+  slug             String           @unique
+  number           Int
+  downloadUrl      String
+  videoId          String
+  text             String
+  sourceUrl        String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  Chapter          Chapter?         @relation(fields: [chapterId], references: [id])
+  chapterId        Int?
+  LessonProgresses LessonProgress[]
+}
+
+model LessonProgress {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  completed Boolean  @default(false)
+  Lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId  Int
+  userEmail String
+
+  @@unique([lessonId, userEmail])
 }

@@ -32,7 +32,8 @@
       <p class="whitespace-pre-line">{{ lesson.text }}</p>
     </div>
     <LessonCompleteButton
-      :model-value="isLessonComplete"
+      v-if="user"
+      :model-value="isCompleted"
       @update:model-value="toggleComplete"
     />
   </div>
@@ -42,46 +43,92 @@
 </template>
 
 <script setup>
+import { courseProgress } from "~/stores/courseProgress.ts";
+
 const course = await useCourse();
+const user = useSupabaseUser();
 const route = useRoute();
-let { chapterSlug, lessonSlug } = route.params;
-let lesson = await useLesson(chapterSlug, lessonSlug);
+const { chapterSlug, lessonSlug } = route.params;
+const lesson = await useLesson(chapterSlug, lessonSlug);
+const store = courseProgress();
+const { initialize, toggleComplete } = store;
 
-// Validation function - separated dari middleware
-async function validateLessonRoute({ params }, from) {
-  const course = await useCourse();
-
-  const chapter = course.value.chapters.find(
-    (chapter) => chapter.slug === params.chapterSlug
-  );
-
-  if (!chapter) {
-    return abortNavigation(
-      createError({
-        statusCode: 404,
-        message: "Chapter not found",
-      })
-    );
-  }
-
-  const lesson = chapter.lessons.find(
-    (lesson) => lesson.slug === params.lessonSlug
-  );
-
-  if (!lesson) {
-    return abortNavigation(
-      createError({
-        statusCode: 404,
-        message: "Lesson not found",
-      })
-    );
-  }
-
-  return true;
-}
+initialize();
 
 definePageMeta({
-  middleware: [validateLessonRoute, "auth"],
+  middleware: [
+    async function ({ params }, form) {
+      const course = await useCourse();
+
+      const chapter = course.value.chapters.find(
+        (chapter) => chapter.slug === params.chapterSlug
+      );
+
+      if (!chapter) {
+        return abortNavigation(
+          createError({
+            statusCode: 404,
+            message: "Chapter not found",
+          })
+        );
+      }
+
+      const lesson = chapter.lessons.find(
+        (lesson) => lesson.slug === params.lessonSlug
+      );
+
+      if (!lesson) {
+        return abortNavigation(
+          createError({
+            statusCode: 404,
+            message: "Lesson not found",
+          })
+        );
+      }
+    },
+    "auth",
+  ],
+});
+
+// // Validation function - separated dari middleware
+// async function validateLessonRoute({ params }, from) {
+//   const course = await useCourse();
+
+//   const chapter = course.value.chapters.find(
+//     (chapter) => chapter.slug === params.chapterSlug
+//   );
+
+//   if (!chapter) {
+//     return abortNavigation(
+//       createError({
+//         statusCode: 404,
+//         message: "Chapter not found",
+//       })
+//     );
+//   }
+
+//   const lesson = chapter.lessons.find(
+//     (lesson) => lesson.slug === params.lessonSlug
+//   );
+
+//   if (!lesson) {
+//     return abortNavigation(
+//       createError({
+//         statusCode: 404,
+//         message: "Lesson not found",
+//       })
+//     );
+//   }
+
+//   return true;
+// }
+
+// definePageMeta({
+//   middleware: [validateLessonRoute, "auth"],
+// });
+
+const isCompleted = computed(() => {
+  return store.progress?.[chapterSlug]?.[lessonSlug] || 0;
 });
 
 const chapter = computed(() => {
@@ -89,20 +136,6 @@ const chapter = computed(() => {
     (chapter) => chapter.slug === route.params.chapterSlug
   );
 });
-
-if (!chapter.value) {
-  throw createError({
-    statusCode: 404,
-    message: "Chapter not found",
-  });
-}
-
-// const lesson = computed(() => {
-//   if (!chapter.value || !route.params.lessonSlug) return null;
-//   return chapter.value.lessons.find(
-//     (lesson) => lesson.slug === route.params.lessonSlug
-//   );
-// });
 
 const title = computed(() => {
   if (!lesson.value) return course.value.title;
@@ -112,26 +145,40 @@ useHead({
   title,
 });
 
-const progress = useLocalStorage("progress", []);
+// if (!chapter.value) {
+//   throw createError({
+//     statusCode: 404,
+//     message: "Chapter not found",
+//   });
+// }
 
-const isLessonComplete = computed(() => {
-  if (!progress.value[chapter.value.number - 1]) {
-    return false;
-  }
+// const lesson = computed(() => {
+//   if (!chapter.value || !route.params.lessonSlug) return null;
+//   return chapter.value.lessons.find(
+//     (lesson) => lesson.slug === route.params.lessonSlug
+//   );
+// });
 
-  if (!progress.value[chapter.value.number - 1][lesson.value.number - 1]) {
-    return false;
-  }
+// const progress = useLocalStorage("progress", []);
 
-  return progress.value[chapter.value.number - 1][lesson.value.number - 1];
-});
+// const isLessonComplete = computed(() => {
+//   if (!progress.value[chapter.value.number - 1]) {
+//     return false;
+//   }
 
-const toggleComplete = () => {
-  if (!progress.value[chapter.value.number - 1]) {
-    progress.value[chapter.value.number - 1] = [];
-  }
+//   if (!progress.value[chapter.value.number - 1][lesson.value.number - 1]) {
+//     return false;
+//   }
 
-  progress.value[chapter.value.number - 1][lesson.value.number - 1] =
-    !isLessonComplete.value;
-};
+//   return progress.value[chapter.value.number - 1][lesson.value.number - 1];
+// });
+
+// const toggleComplete = () => {
+//   if (!progress.value[chapter.value.number - 1]) {
+//     progress.value[chapter.value.number - 1] = [];
+//   }
+
+//   progress.value[chapter.value.number - 1][lesson.value.number - 1] =
+//     !isLessonComplete.value;
+// };
 </script>

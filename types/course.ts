@@ -34,3 +34,9 @@ export type CourseMeta = {
   title: string;
   chapters: OutlineChapter[];
 };
+
+export type CourseProgress = {
+  [chapterSlug: string]: {
+    [lessonSlug: string]: boolean;
+  };
+};

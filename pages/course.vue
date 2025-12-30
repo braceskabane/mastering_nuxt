@@ -16,11 +16,18 @@
 
         <div
           class="space-y-1 mb-4 flex flex-col"
-          v-for="chapter in chapters"
+          v-for="(chapter, index) in course.chapters"
           :key="chapter.slug"
         >
-          <h4>{{ chapter.title }}</h4>
-
+          <h4 class="flex justify-between items-center">
+            {{ chapter.title }}
+            <span
+              v-if="percentageCompleted && user"
+              class="text-emerald-500 text-sm"
+            >
+              {{ percentageCompleted.chapters[index] }}%
+            </span>
+          </h4>
           <NuxtLink
             v-for="(lesson, index) in chapter.lessons"
             :key="lesson.slug"
@@ -36,11 +43,19 @@
             <span>{{ lesson.title }}</span>
           </NuxtLink>
         </div>
+        <div
+          v-if="percentageCompleted"
+          class="mt-8 text-sm font-medium text-gray-500 flex justify-between"
+        >
+          Course completion:
+          <span> {{ percentageCompleted.course }}% </span>
+        </div>
       </div>
+
       <div class="prose p-12 bg-red-100 rounded-md w-[65ch]">
         <NuxtErrorBoundary @error="onError">
           <NuxtPage />
-          <template #error="{ error, clearError }">
+          <template #error="{ error }">
             <p>
               Oh no, something went wrong with the lesson!
               <code>{{ error }}</code>
@@ -48,7 +63,7 @@
             <p>
               <button
                 class="hover:cursor-pointer bg-gray-500 text-white font-bold py-2 px-4 rounded mt-4"
-                @click="clearError({ redirect: firstLesson.path })"
+                @click="resetError(error)"
               >
                 Reset
               </button>
@@ -61,12 +76,16 @@
 </template>
 
 <script setup>
+import { useCourseProgress } from "~/stores/courseProgress";
+import { storeToRefs } from "pinia";
+const user = useSupabaseUser();
 const course = await useCourse();
 const firstLesson = await useFirstLesson();
 
-const chapters = computed(() => course.value.chapters);
+const { percentageCompleted } = storeToRefs(useCourseProgress());
 
-const onError = (error) => {
-  console.error("Lesson error:", error);
+const resetError = async (error) => {
+  await navigateTo(firstLesson.path);
+  error.value = null;
 };
 </script>
