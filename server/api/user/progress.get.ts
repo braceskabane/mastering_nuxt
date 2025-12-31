@@ -43,7 +43,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  console.log("✅ Progress transformed:", Object.keys(progress).length, "chapters");
+  console.log(
+    "✅ Progress transformed:",
+    Object.keys(progress).length,
+    "chapters"
+  );
 
   return progress;
 });

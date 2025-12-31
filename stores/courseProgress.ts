@@ -126,8 +126,7 @@ export const useCourseProgress = defineStore("courseProgress", () => {
       (sum, chapterProgress) => {
         return (
           sum +
-          Object.values(chapterProgress).filter((completed) => completed)
-            .length
+          Object.values(chapterProgress).filter((completed) => completed).length
         );
       },
       0

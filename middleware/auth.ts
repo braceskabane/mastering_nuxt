@@ -17,10 +17,26 @@
 //   // Setelah user login di halaman /login, mereka akan otomatis di-redirect ke halaman yang sebelumnya mereka coba akses!
 //   return navigateTo(`/login?redirectTo=${to.path}`);
 // });
-export default defineNuxtRouteMiddleware((to, from) => {
+
+// export default defineNuxtRouteMiddleware((to, from) => {
+//   const user = useSupabaseUser();
+//   if (user.value || to.params.chapterSlug === "1-chapter-1-introduction") {
+//     return;
+//   }
+//   return navigateTo(`/login?redirectTo=${to.path}`);
+// });
+
+export default defineNuxtRouteMiddleware(async (to) => {
   const user = useSupabaseUser();
-  if (user.value || to.params.chapterSlug === "1-chapter-1-introduction") {
+  const { data: hasAccess } = await useFetch("/api/user/hasAccess", {
+    headers: useRequestHeaders(["cookie"]),
+  });
+
+  if (hasAccess.value || to.params.chapterSlug === "1-chapter-1") {
     return;
+  } else if (user.value && !hasAccess.value) {
+    const client = useSupabaseClient();
+    await client.auth.signOut();
   }
   return navigateTo(`/login?redirectTo=${to.path}`);
 });
