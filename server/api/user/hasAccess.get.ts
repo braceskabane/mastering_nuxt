@@ -5,11 +5,16 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   // Protect the route - requires authenticated user
-  protectRoute(event);
+  await protectRoute(event);
 
-  const {
-    user: { email: userEmail },
-  } = event.context;
+  const userEmail = event.context.user?.email;
+
+  if (!userEmail) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "User email not found",
+    });
+  }
 
   try {
     // Get courseId from query params

@@ -4,7 +4,7 @@ export default async (event: H3Event) => {
   if (!event.context.user) {
     throw createError({
       statusCode: 401,
-      statusMessage: "Unauthorized",
+      statusMessage: "Unauthorized - Authentication required",
     });
   }
 };

@@ -4,11 +4,16 @@ import protectRoute from "~/server/utils/protectRoute";
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
-  protectRoute(event);
+  await protectRoute(event);
 
-  const {
-    user: { email: userEmail },
-  } = event.context;
+  const userEmail = event.context.user?.email;
+
+  if (!userEmail) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "User email not found",
+    });
+  }
 
   console.log("📊 Fetching progress for user:", userEmail);
 
