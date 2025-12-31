@@ -162,14 +162,15 @@ const handleSubmit = async () => {
 
   try {
     // Step 1: Create payment intent on server
-    const { clientSecret } = await $fetch("/api/stripe/paymentIntent", {
-      method: "POST",
-      body: { email: email.value },
-    });
+    const response = await $fetch<{ clientSecret: string; paymentIntentId: string }>(
+      "/api/stripe/paymentIntent",
+      {
+        method: "POST",
+        body: { email: email.value },
+      }
+    );
 
-    if (!clientSecret) {
-      throw new Error("Failed to create payment intent");
-    }
+    const { clientSecret } = response;
 
     // Step 2: Confirm card payment with Stripe
     const { paymentIntent, error: stripeError } =

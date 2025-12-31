@@ -1,5 +1,3 @@
-import vsharp from "vite-plugin-vsharp";
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
@@ -10,9 +8,6 @@ export default defineNuxtConfig({
     ["@nuxtjs/supabase", { redirect: false }],
     "@pinia/nuxt",
   ],
-  vite: {
-    plugins: [vsharp()],
-  },
   css: ["~/assets/css/main.css"],
   runtimeConfig: {
     // Server-side only (build time)
