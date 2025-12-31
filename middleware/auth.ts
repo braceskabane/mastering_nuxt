@@ -35,9 +35,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     // User is logged in but doesn't have access (not verified/paid)
     // Redirect to login to complete payment flow
-    console.log(
-      "User not verified, redirecting to login for payment"
-    );
+    console.log("User not verified, redirecting to login for payment");
     return navigateTo(`/login?redirectTo=${to.path}`);
   } catch (error) {
     console.error("Access check failed:", error);

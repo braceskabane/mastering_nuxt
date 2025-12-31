@@ -91,7 +91,7 @@ const linkPurchase = async () => {
     }
 
     // Call the API to link the purchase
-    const response = await $fetch(
+    const response = await $fetch<{ success: boolean }>(
       `/api/user/linkWithPurchase/${paymentId.value}`,
       {
         method: "GET",
