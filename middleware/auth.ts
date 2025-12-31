@@ -1,42 +1,32 @@
-// export default defineNuxtRouteMiddleware(async (to, from) => {
-//   const supabase = useSupabaseClient();
-
-//   // Check session directly (synchronous check from localStorage)
-//   const {
-//     data: { session },
-//   } = await supabase.auth.getSession();
-
-//   // Allow access if:
-//   // 1. User has valid session (logged in)
-//   // 2. OR accessing chapter 1 (free chapter)
-//   // 3. OR in development mode (disable auth for testing)
-//   if (session?.user || to.params.chapterSlug === "1-chapter-1" || process.dev) {
-//     return;
-//   }
-
-//   // Setelah user login di halaman /login, mereka akan otomatis di-redirect ke halaman yang sebelumnya mereka coba akses!
-//   return navigateTo(`/login?redirectTo=${to.path}`);
-// });
-
-// export default defineNuxtRouteMiddleware((to, from) => {
-//   const user = useSupabaseUser();
-//   if (user.value || to.params.chapterSlug === "1-chapter-1-introduction") {
-//     return;
-//   }
-//   return navigateTo(`/login?redirectTo=${to.path}`);
-// });
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const user = useSupabaseUser();
-  const { data: hasAccess } = await useFetch("/api/user/hasAccess", {
-    headers: useRequestHeaders(["cookie"]),
-  });
 
-  if (hasAccess.value || to.params.chapterSlug === "1-chapter-1") {
+  // Allow access to free chapters
+  if (to.params.chapterSlug === "1-chapter-1") {
     return;
-  } else if (user.value && !hasAccess.value) {
-    const client = useSupabaseClient();
-    await client.auth.signOut();
   }
-  return navigateTo(`/login?redirectTo=${to.path}`);
+
+  // If not logged in, redirect to login
+  if (!user.value) {
+    return navigateTo(`/login?redirectTo=${to.path}`);
+  }
+
+  try {
+    // Check if user has access to the course
+    const response = await $fetch<{ hasAccess: boolean }>("/api/user/hasAccess", {
+      headers: useRequestHeaders(["cookie"]),
+    });
+
+    if (response?.hasAccess) {
+      return;
+    }
+
+    // User is logged in but doesn't have access
+    // Redirect to login to start payment flow
+    return navigateTo(`/login?redirectTo=${to.path}`);
+  } catch (error) {
+    console.error("Access check failed:", error);
+    // On error, deny access and redirect to login
+    return navigateTo(`/login?redirectTo=${to.path}`);
+  }
 });
