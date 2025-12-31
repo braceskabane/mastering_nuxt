@@ -32,32 +32,22 @@ watchEffect(async () => {
 });
 
 const login = async () => {
-  // OAuth redirect ke callback (bukan ke redirectTo langsung)
-  // const { data, error } = await supabase.auth.signInWithOAuth({
-  //   provider: "github",
-  //   options: {
-  //     redirectTo: `${window.location.origin}/auth/callback`,
-  //   },
-  // });
+  // Store the original redirect path in sessionStorage
+  const originalRedirect = query.redirectTo as string;
+  if (originalRedirect) {
+    sessionStorage.setItem("authRedirectTo", originalRedirect);
+  }
 
-  // if (error) {
-  //   console.error("Error during login:", error.message);
-  // } else {
-  //   console.log("Login initiated:", data);
-  // }
-  const redirectTo = query.redirectTo
-    ? `${window.location.origin}/login?redirectTo=${query.redirectTo}`
-    : window.location.origin;
-
+  // Always redirect to auth/callback after GitHub OAuth completes
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "github",
     options: {
-      redirectTo,
+      redirectTo: `${window.location.origin}/auth/callback`,
     },
   });
 
   if (error) {
-    console.error(error);
+    console.error("OAuth login error:", error);
   }
 };
 </script>

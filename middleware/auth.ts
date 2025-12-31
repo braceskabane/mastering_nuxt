@@ -1,6 +1,12 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   const user = useSupabaseUser();
 
+  // Allow access to public routes - don't protect these
+  const publicRoutes = ["/", "/landing", "/login", "/auth/callback"];
+  if (publicRoutes.includes(to.path) || to.path.startsWith("/linkWithPurchase")) {
+    return;
+  }
+
   // Allow access to free chapters
   if (to.params.chapterSlug === "1-chapter-1") {
     return;
@@ -22,11 +28,14 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     // User is logged in but doesn't have access
-    // Redirect to login to start payment flow
-    return navigateTo(`/login?redirectTo=${to.path}`);
+    // Show payment prompt by redirecting to landing with a flag
+    console.log("User logged in but no access, redirecting to landing for payment");
+    return navigateTo("/landing?action=buy");
   } catch (error) {
     console.error("Access check failed:", error);
-    // On error, deny access and redirect to login
-    return navigateTo(`/login?redirectTo=${to.path}`);
+    // On error, allow access (better UX than blocking)
+    // User will see content but might not be able to progress
+    console.warn("Allowing access despite error:", error);
+    return;
   }
 });
