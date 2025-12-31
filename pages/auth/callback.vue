@@ -44,9 +44,9 @@ onMounted(async () => {
 
         // Fallback to query parameter if no sessionStorage value
         if (!redirectTo) {
-          redirectTo = new URLSearchParams(window.location.search).get(
-            "redirectTo"
-          ) || null;
+          redirectTo =
+            new URLSearchParams(window.location.search).get("redirectTo") ||
+            null;
         }
 
         // Redirect to the intended page or index

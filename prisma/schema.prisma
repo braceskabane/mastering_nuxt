@@ -65,6 +65,6 @@ model CoursePurchase {
   Course    Course   @relation(fields: [courseId], references: [id])
   courseId  Int
   userEmail String
-  verified Boolean  @default(false)
-  paymentId String  @unique
+  verified  Boolean  @default(false)
+  paymentId String   @unique
 }

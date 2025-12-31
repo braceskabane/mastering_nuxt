@@ -1,23 +1,34 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+  <div
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4"
+  >
     <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
       <!-- Loading State -->
-      <div v-if="loading" class="flex flex-col items-center justify-center space-y-4">
+      <div
+        v-if="loading"
+        class="flex flex-col items-center justify-center space-y-4"
+      >
         <Loading class="h-12 w-12 text-blue-600" />
-        <h1 class="text-xl font-bold text-gray-800">Linking Your Purchase...</h1>
+        <h1 class="text-xl font-bold text-gray-800">
+          Linking Your Purchase...
+        </h1>
         <p class="text-gray-600 text-center">
           Please wait while we verify and link your purchase to your account.
         </p>
       </div>
 
       <!-- Success State -->
-      <div v-else-if="success" class="flex flex-col items-center justify-center space-y-4">
+      <div
+        v-else-if="success"
+        class="flex flex-col items-center justify-center space-y-4"
+      >
         <div class="text-6xl">✅</div>
         <h1 class="text-2xl font-bold text-gray-800 text-center">
           Purchase Linked Successfully!
         </h1>
         <p class="text-gray-600 text-center">
-          Your purchase has been linked to your account. You now have access to the course.
+          Your purchase has been linked to your account. You now have access to
+          the course.
         </p>
         <button
           @click="navigateToCourse"
@@ -97,7 +108,8 @@ const linkPurchase = async () => {
       throw new Error("Failed to link purchase");
     }
   } catch (err: any) {
-    error.value = err.message || "An error occurred while linking your purchase";
+    error.value =
+      err.message || "An error occurred while linking your purchase";
     console.error("Link purchase error:", err);
   } finally {
     loading.value = false;

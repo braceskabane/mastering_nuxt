@@ -32,7 +32,9 @@ export default defineEventHandler(async (event) => {
 
     return {
       hasAccess: !!purchase,
-      message: purchase ? "User has access to this course" : "User does not have access",
+      message: purchase
+        ? "User has access to this course"
+        : "User does not have access",
     };
   } catch (error) {
     console.error("hasAccess error:", error);

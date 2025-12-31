@@ -11,7 +11,8 @@
           Thank you for your purchase!
         </h2>
         <p class="text-gray-600 text-center">
-          Your payment has been processed. Click below to login and start learning.
+          Your payment has been processed. Click below to login and start
+          learning.
         </p>
         <button
           class="w-full text-lg text-white h-12 px-16 rounded-lg bg-blue-600 hover:bg-blue-700 cursor-pointer font-semibold transition-colors"
@@ -50,7 +51,10 @@
         </div>
 
         <!-- Error Message -->
-        <div v-if="error" class="p-4 bg-red-50 border border-red-300 rounded-lg">
+        <div
+          v-if="error"
+          class="p-4 bg-red-50 border border-red-300 rounded-lg"
+        >
           <p class="text-red-800 text-sm">{{ error }}</p>
         </div>
 
@@ -65,7 +69,10 @@
               : 'bg-yellow-400 hover:bg-yellow-500 cursor-pointer'
           "
         >
-          <div v-if="processingPayment" class="flex items-center justify-center space-x-2">
+          <div
+            v-if="processingPayment"
+            class="flex items-center justify-center space-x-2"
+          >
             <Loading class="h-5 w-5" />
             <span>Processing...</span>
           </div>
@@ -162,13 +169,13 @@ const handleSubmit = async () => {
 
   try {
     // Step 1: Create payment intent on server
-    const response = await $fetch<{ clientSecret: string; paymentIntentId: string }>(
-      "/api/stripe/paymentIntent",
-      {
-        method: "POST",
-        body: { email: email.value },
-      }
-    );
+    const response = await $fetch<{
+      clientSecret: string;
+      paymentIntentId: string;
+    }>("/api/stripe/paymentIntent", {
+      method: "POST",
+      body: { email: email.value },
+    });
 
     const { clientSecret } = response;
 

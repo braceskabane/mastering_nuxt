@@ -2,11 +2,14 @@
   <div class="bg-white">
     <!-- Hero Section -->
     <Section class="space-y-8 flex flex-col py-16">
-      <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-blue-500 m-0 p-0 leading-tight">
+      <h1
+        class="text-4xl md:text-6xl lg:text-7xl font-black text-blue-500 m-0 p-0 leading-tight"
+      >
         {{ course?.title || "Loading Course..." }}
       </h1>
       <p class="text-lg md:text-xl text-gray-600 max-w-2xl">
-        Master Nuxt 3, Supabase, and modern full-stack development with this comprehensive course.
+        Master Nuxt 3, Supabase, and modern full-stack development with this
+        comprehensive course.
       </p>
       <button
         class="bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-4 px-8 rounded-lg text-lg md:text-xl w-full md:w-auto transition-colors"
@@ -81,9 +84,13 @@
     </Section>
 
     <!-- CTA Section -->
-    <Section class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-16 rounded-xl space-y-6">
+    <Section
+      class="bg-gradient-to-r from-blue-500 to-blue-600 text-white py-16 rounded-xl space-y-6"
+    >
       <h2 class="text-3xl md:text-4xl font-bold">Ready to get started?</h2>
-      <p class="text-lg md:text-xl opacity-90">Join hundreds of developers learning Nuxt 3</p>
+      <p class="text-lg md:text-xl opacity-90">
+        Join hundreds of developers learning Nuxt 3
+      </p>
       <button
         class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-4 px-8 rounded-lg text-lg transition-colors"
         @click="showPayment = true"
@@ -94,10 +101,7 @@
   </div>
 
   <!-- Lazy Load Payment Modal -->
-  <LazyPayment
-    v-if="showPayment"
-    @close="showPayment = false"
-  />
+  <LazyPayment v-if="showPayment" @close="showPayment = false" />
 </template>
 
 <script setup lang="ts">
@@ -159,5 +163,3 @@ useHead({
   ],
 });
 </script>
-
-

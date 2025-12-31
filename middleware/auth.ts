@@ -3,7 +3,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Allow access to public routes - don't protect these
   const publicRoutes = ["/", "/landing", "/login", "/auth/callback"];
-  if (publicRoutes.includes(to.path) || to.path.startsWith("/linkWithPurchase")) {
+  if (
+    publicRoutes.includes(to.path) ||
+    to.path.startsWith("/linkWithPurchase")
+  ) {
     return;
   }
 
@@ -19,18 +22,23 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   try {
     // Check if user has access to the course
-    const response = await $fetch<{ hasAccess: boolean }>("/api/user/hasAccess", {
-      headers: useRequestHeaders(["cookie"]),
-    });
+    const response = await $fetch<{ hasAccess: boolean }>(
+      "/api/user/hasAccess",
+      {
+        headers: useRequestHeaders(["cookie"]),
+      }
+    );
 
     if (response?.hasAccess) {
       return;
     }
 
-    // User is logged in but doesn't have access
-    // Show payment prompt by redirecting to landing with a flag
-    console.log("User logged in but no access, redirecting to landing for payment");
-    return navigateTo("/landing?action=buy");
+    // User is logged in but doesn't have access (not verified/paid)
+    // Redirect to login to complete payment flow
+    console.log(
+      "User not verified, redirecting to login for payment"
+    );
+    return navigateTo(`/login?redirectTo=${to.path}`);
   } catch (error) {
     console.error("Access check failed:", error);
     // On error, allow access (better UX than blocking)
