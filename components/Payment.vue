@@ -1,21 +1,20 @@
 <template>
   <Modal @close="$emit('close')">
-    <div class="bg-white p-8 rounded-xl w-full max-w-2xl">
+    <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-2xl w-full max-w-2xl border border-slate-700">
       <!-- Success State -->
       <div
         v-if="success"
         class="flex flex-col items-center justify-center space-y-6"
       >
-        <div class="text-6xl">🎉</div>
-        <h2 class="font-bold text-2xl text-center">
-          Thank you for your purchase!
+        <div class="text-6xl animate-bounce">🎉</div>
+        <h2 class="font-bold text-3xl text-center text-white">
+          Welcome Aboard!
         </h2>
-        <p class="text-gray-600 text-center">
-          Your payment has been processed. Click below to login and start
-          learning.
+        <p class="text-slate-300 text-center max-w-md leading-relaxed">
+          Your payment has been successfully processed. You're now ready to start your learning journey. Click below to access your course.
         </p>
         <button
-          class="w-full text-lg text-white h-12 px-16 rounded-lg bg-blue-600 hover:bg-blue-700 cursor-pointer font-semibold transition-colors"
+          class="w-full text-lg text-white h-12 px-16 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:shadow-lg hover:shadow-blue-500/50 cursor-pointer font-semibold transition-all duration-300 transform hover:scale-105"
           @click="navigateToLogin"
         >
           Login with GitHub to Access Course
@@ -24,65 +23,70 @@
 
       <!-- Payment Form -->
       <form v-else @submit.prevent="handleSubmit" class="space-y-6">
-        <h2 class="font-bold text-2xl text-center">
-          Enroll in {{ course?.title || "Course" }}
-        </h2>
+        <div class="space-y-2 mb-8">
+          <h2 class="font-bold text-3xl text-white text-center">
+            Enroll in {{ course?.title || "Course" }}
+          </h2>
+          <p class="text-center text-slate-400">Secure payment powered by Stripe</p>
+        </div>
 
         <!-- Email Input -->
         <div class="space-y-2">
-          <label class="block font-semibold text-gray-700">Email Address</label>
+          <label class="block font-semibold text-slate-300">Email Address</label>
           <input
             v-model="email"
             type="email"
             autocomplete="email"
             placeholder="your@email.com"
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-4 py-3 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-700 text-white placeholder-slate-500 transition-colors"
           />
         </div>
 
         <!-- Stripe Card Element -->
         <div class="space-y-2">
-          <label class="block font-semibold text-gray-700">Card Details</label>
+          <label class="block font-semibold text-slate-300">Card Details</label>
           <div
             id="card-element"
-            class="p-4 border border-gray-300 rounded-lg bg-white"
+            class="p-4 border border-slate-600 rounded-lg bg-slate-700 focus:ring-2 focus:ring-blue-500"
           ></div>
         </div>
 
         <!-- Error Message -->
         <div
           v-if="error"
-          class="p-4 bg-red-50 border border-red-300 rounded-lg"
+          class="p-4 rounded-lg bg-red-900/30 border border-red-600 text-red-200"
         >
-          <p class="text-red-800 text-sm">{{ error }}</p>
+          <p class="text-sm font-semibold">{{ error }}</p>
         </div>
 
-        <!-- Submit Button -->
-        <button
-          type="submit"
-          :disabled="processingPayment || !email"
-          class="w-full text-lg text-white font-semibold h-12 rounded-lg transition-all"
-          :class="
-            processingPayment || !email
-              ? 'bg-gray-300 cursor-not-allowed'
-              : 'bg-yellow-400 hover:bg-yellow-500 cursor-pointer'
-          "
-        >
-          <div
-            v-if="processingPayment"
-            class="flex items-center justify-center space-x-2"
+        <!-- Loading and Submit Button -->
+        <div class="flex gap-4">
+          <button
+            type="button"
+            class="flex-1 h-12 px-6 text-slate-300 rounded-lg bg-slate-700 hover:bg-slate-600 font-semibold transition-colors border border-slate-600 disabled:opacity-50"
+            @click="$emit('close')"
+            :disabled="processingPayment"
           >
-            <Loading class="h-5 w-5" />
-            <span>Processing...</span>
-          </div>
-          <div v-else>Pay $97</div>
-        </button>
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="flex-1 h-12 px-6 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="processingPayment"
+          >
+            <span v-if="!processingPayment">Pay Now</span>
+            <span v-else>Processing...</span>
+          </button>
+        </div>
 
-        <!-- Security Notice -->
-        <p class="text-xs text-gray-500 text-center">
+        <!-- Secure Payment Badge -->
+        <div class="flex items-center justify-center gap-2 text-xs text-slate-400 pt-4 border-t border-slate-700">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+          </svg>
           Your payment information is secure and encrypted
-        </p>
+        </div>
       </form>
     </div>
   </Modal>
@@ -113,19 +117,20 @@ const success = ref(false);
 const error = ref("");
 const paymentIntentId = ref("");
 
-// Stripe styling
+// Stripe styling for dark theme
 const formStyle = {
   base: {
     fontSize: "16px",
-    color: "#32325d",
+    color: "#f1f5f9",
     fontFamily: "system-ui, -apple-system, sans-serif",
+    backgroundColor: "#0f172a",
     "::placeholder": {
-      color: "#aab7c4",
+      color: "#64748b",
     },
   },
   invalid: {
-    color: "#fa755a",
-    iconColor: "#fa755a",
+    color: "#fca5a5",
+    iconColor: "#fca5a5",
   },
 };
 
