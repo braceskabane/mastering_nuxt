@@ -1,6 +1,8 @@
 <template>
   <Modal @close="$emit('close')">
-    <div class="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-2xl w-full max-w-2xl border border-slate-700">
+    <div
+      class="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-2xl w-full max-w-2xl border border-slate-700"
+    >
       <!-- Success State -->
       <div
         v-if="success"
@@ -11,7 +13,8 @@
           Welcome Aboard!
         </h2>
         <p class="text-slate-300 text-center max-w-md leading-relaxed">
-          Your payment has been successfully processed. You're now ready to start your learning journey. Click below to access your course.
+          Your payment has been successfully processed. You're now ready to
+          start your learning journey. Click below to access your course.
         </p>
         <button
           class="w-full text-lg text-white h-12 px-16 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:shadow-lg hover:shadow-blue-500/50 cursor-pointer font-semibold transition-all duration-300 transform hover:scale-105"
@@ -27,12 +30,16 @@
           <h2 class="font-bold text-3xl text-white text-center">
             Enroll in {{ course?.title || "Course" }}
           </h2>
-          <p class="text-center text-slate-400">Secure payment powered by Stripe</p>
+          <p class="text-center text-slate-400">
+            Secure payment powered by Stripe
+          </p>
         </div>
 
         <!-- Email Input -->
         <div class="space-y-2">
-          <label class="block font-semibold text-slate-300">Email Address</label>
+          <label class="block font-semibold text-slate-300"
+            >Email Address</label
+          >
           <input
             v-model="email"
             type="email"
@@ -81,9 +88,15 @@
         </div>
 
         <!-- Secure Payment Badge -->
-        <div class="flex items-center justify-center gap-2 text-xs text-slate-400 pt-4 border-t border-slate-700">
+        <div
+          class="flex items-center justify-center gap-2 text-xs text-slate-400 pt-4 border-t border-slate-700"
+        >
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+            <path
+              fill-rule="evenodd"
+              d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+              clip-rule="evenodd"
+            />
           </svg>
           Your payment information is secure and encrypted
         </div>
