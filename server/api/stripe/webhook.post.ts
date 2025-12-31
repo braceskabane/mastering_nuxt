@@ -1,78 +1,80 @@
+import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
-import stripe from "./stripe";
-
-type PaymentIntent = {
-  id: string;
-};
 
 const prisma = new PrismaClient();
 
-const STRIPE_WEBHOOK_SECRET = useRuntimeConfig().stripeWebhookSecret;
-
 export default defineEventHandler(async (event) => {
-  const signature = getHeader(event, "stripe-signature");
-  const body = await readRawBody(event);
+  const config = useRuntimeConfig();
 
-  let stripeEvent;
-  try {
-    stripeEvent = await stripe.webhooks.constructEvent(
-      body,
-      signature,
-      STRIPE_WEBHOOK_SECRET
-    );
-  } catch (error) {
-    console.error(error);
+  if (!config.stripeSecret || !config.stripeWebhookSecret) {
     throw createError({
-      statusCode: 400,
-      statusMessage: `Invalid signature`,
+      statusCode: 500,
+      statusMessage: "Stripe configuration incomplete",
     });
   }
-  if (stripeEvent.type === "payment_intent.succeeded") {
-    await handlePaymentIntentSucceeded(stripeEvent.data.object);
-  } else if (
-    stripeEvent.type === "payment_intent.payment_failed"
-  ) {
-    await handlePaymentIntentFailed(stripeEvent.data.object);
+
+  // Get raw body for signature verification
+  const body = await readRawBody(event);
+  const signature = getHeader(event, "stripe-signature");
+
+  if (!body || !signature) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Missing webhook body or signature",
+    });
   }
 
-  return 200;
+  // Initialize Stripe
+  const stripe = new Stripe(config.stripeSecret as string);
+
+  let stripeEvent: Stripe.Event;
+
+  try {
+    // Verify webhook signature
+    stripeEvent = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      config.stripeWebhookSecret as string
+    );
+  } catch (err: any) {
+    console.error("Webhook signature verification failed:", err.message);
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Webhook signature verification failed",
+    });
+  }
+
+  try {
+    // Handle payment_intent.succeeded event
+    if (stripeEvent.type === "payment_intent.succeeded") {
+      const paymentIntent = stripeEvent.data.object as Stripe.PaymentIntent;
+
+      // Update CoursePurchase record to verified
+      await prisma.coursePurchase.updateMany({
+        where: { paymentId: paymentIntent.id },
+        data: { verified: true },
+      });
+
+      console.log(
+        `✅ Payment verified for ${paymentIntent.id}: ${paymentIntent.metadata?.email}`
+      );
+    }
+
+    // Handle payment_intent.payment_failed event
+    if (stripeEvent.type === "payment_intent.payment_failed") {
+      const paymentIntent = stripeEvent.data.object as Stripe.PaymentIntent;
+      console.log(
+        `❌ Payment failed for ${paymentIntent.id}: ${paymentIntent.metadata?.email}`
+      );
+    }
+
+    return { received: true };
+  } catch (error) {
+    console.error("Webhook processing error:", error);
+    throw createError({
+      statusCode: 500,
+      statusMessage:
+        error instanceof Error ? error.message : "Webhook processing failed",
+    });
+  }
 });
-
-async function handlePaymentIntentSucceeded(
-  paymentIntent: PaymentIntent
-) {
-    try {
-        await prisma.coursePurchase.update({
-            where: {
-                paymentId: paymentIntent.id,
-            }
-            data: {
-                verified: true,
-            }
-        });
-    } catch (error) {
-        console.error(error);
-        throw createError({
-            statusCode: 500,
-            statusMessage: "Error verifying purchase",
-        });
-    }
-}
-
-async function handlePaymentIntentFailed(
-    paymentIntent: PaymentIntent
-) {
-    try {
-        await prisma.coursePurchase.delete({
-            where: {
-                paymentId: paymentIntent.id,
-            }
-        });
-    } catch (error) {
-        console.error(error);
-        throw createError({
-            statusCode: 500,
-            statusMessage: "Error removing purchase",
-        });
-    }
-}

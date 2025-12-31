@@ -1,139 +1,229 @@
 <template>
   <Modal @close="$emit('close')">
-    <div class="bg-slate-200 p-8 rounded-xl w-full max-w-2xl">
+    <div class="bg-white p-8 rounded-xl w-full max-w-2xl">
+      <!-- Success State -->
       <div
         v-if="success"
         class="flex flex-col items-center justify-center space-y-6"
       >
+        <div class="text-6xl">🎉</div>
         <h2 class="font-bold text-2xl text-center">
-          Thank for buying the course!
+          Thank you for your purchase!
         </h2>
+        <p class="text-gray-600 text-center">
+          Your payment has been processed. Click below to login and start learning.
+        </p>
         <button
-          class="font-sans mt-4 w-full text-lg text-black h-12 px-16 rounded-lg bg-yellow-300 hover:bg-yellow-200 cursor-pointer"
-          @click="login"
+          class="w-full text-lg text-white h-12 px-16 rounded-lg bg-blue-600 hover:bg-blue-700 cursor-pointer font-semibold transition-colors"
+          @click="navigateToLogin"
         >
-          Login with Github to access
+          Login with GitHub to Access Course
         </button>
       </div>
-      <form @submit.prevent="handleSubmit">
-        <h2 class="font-bold text-xl text-center">Buying {{ Course.title }}</h2>
-        <div class="mt-8 text-base width bg-white py-6 px-8 rounded shadow-md">
-          <div class="w-full flex justify-between items-center mb-8">
-            <label class="font-bold"> Email </label>
-            <input
-              class="input ml-6 focus:outline-none text-left w-full"
-              type="email"
-              autocomplete="email"
-              placeholder="your@email.com"
-              required
-            />
-          </div>
 
-          <div id="card-element">
-            <!-- A Stripe Element will be inserted here. -->
-          </div>
+      <!-- Payment Form -->
+      <form v-else @submit.prevent="handleSubmit" class="space-y-6">
+        <h2 class="font-bold text-2xl text-center">
+          Enroll in {{ course?.title || "Course" }}
+        </h2>
+
+        <!-- Email Input -->
+        <div class="space-y-2">
+          <label class="block font-semibold text-gray-700">Email Address</label>
+          <input
+            v-model="email"
+            type="email"
+            autocomplete="email"
+            placeholder="your@email.com"
+            required
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
+
+        <!-- Stripe Card Element -->
+        <div class="space-y-2">
+          <label class="block font-semibold text-gray-700">Card Details</label>
+          <div
+            id="card-element"
+            class="p-4 border border-gray-300 rounded-lg bg-white"
+          ></div>
+        </div>
+
+        <!-- Error Message -->
+        <div v-if="error" class="p-4 bg-red-50 border border-red-300 rounded-lg">
+          <p class="text-red-800 text-sm">{{ error }}</p>
+        </div>
+
+        <!-- Submit Button -->
         <button
-          class="font-sans mt-4 w-full text-lg text-black h-12 px-16 rounded-lg"
+          type="submit"
+          :disabled="processingPayment || !email"
+          class="w-full text-lg text-white font-semibold h-12 rounded-lg transition-all"
           :class="
-            processingPayment || email === ''
+            processingPayment || !email
               ? 'bg-gray-300 cursor-not-allowed'
-              : 'bg-yellow-300 hover:bg-yellow-200 cursor-pointer'
+              : 'bg-yellow-400 hover:bg-yellow-500 cursor-pointer'
           "
-          :disabled="processingPayment || email === ''"
         >
-          <Loading v-if="processingPayment" class="h-5 w-5" />
+          <div v-if="processingPayment" class="flex items-center justify-center space-x-2">
+            <Loading class="h-5 w-5" />
+            <span>Processing...</span>
+          </div>
           <div v-else>Pay $97</div>
         </button>
+
+        <!-- Security Notice -->
+        <p class="text-xs text-gray-500 text-center">
+          Your payment information is secure and encrypted
+        </p>
       </form>
     </div>
   </Modal>
 </template>
 
-<script setup>
-const course = await useCourse();
+<script setup lang="ts">
+// Emit close event
+const emit = defineEmits(["close"]);
+
+// Get course data
+let course = null;
+try {
+  course = await useCourse();
+} catch (error) {
+  console.error("Error loading course:", error);
+}
+
+// Get config
 const config = useRuntimeConfig();
-const stripe = ref(null);
-const card = ref(null);
+
+// State
+const stripe = ref<any>(null);
+const elements = ref<any>(null);
+const card = ref<any>(null);
 const email = ref("");
 const processingPayment = ref(false);
 const success = ref(false);
-const paymentIntentId = ref(null);
+const error = ref("");
+const paymentIntentId = ref("");
 
+// Stripe styling
 const formStyle = {
   base: {
     fontSize: "16px",
-    color: "#3d4852",
+    color: "#32325d",
+    fontFamily: "system-ui, -apple-system, sans-serif",
     "::placeholder": {
-      color: "#8795a1",
+      color: "#aab7c4",
     },
+  },
+  invalid: {
+    color: "#fa755a",
+    iconColor: "#fa755a",
   },
 };
 
-const elements = computed(() => stripe.value?.elements());
-
-const setupStripe = () => {
-  stripe.value = Stripe(config.public.stripeKey);
-
-  if (!card.value && elements.value) {
-    card.value = elements.value.create("card", {
-      style: formStyle,
-    });
-    card.value.mount("#card-element");
+/**
+ * Initialize Stripe Elements
+ */
+const initializeStripe = () => {
+  if (!config.public.stripeKey) {
+    error.value = "Stripe key not configured";
+    return;
   }
+
+  stripe.value = (window as any).Stripe(config.public.stripeKey);
+  elements.value = stripe.value.elements();
+
+  // Create card element
+  card.value = elements.value.create("card", { style: formStyle });
+  card.value.mount("#card-element");
+
+  // Handle card errors
+  card.value.on("change", (event: any) => {
+    if (event.error) {
+      error.value = event.error.message;
+    } else {
+      error.value = "";
+    }
+  });
 };
 
+/**
+ * Handle form submission
+ */
 const handleSubmit = async () => {
-  if (email.value === "") {
+  if (!email.value) {
+    error.value = "Please enter your email";
     return;
   }
 
   processingPayment.value = true;
-  let secret;
+  error.value = "";
+
   try {
-    const response = await $fetch("/api/stripe/paymentIntent", {
+    // Step 1: Create payment intent on server
+    const { clientSecret } = await $fetch("/api/stripe/paymentIntent", {
       method: "POST",
-      body: {
-        email: email.value,
-      },
-    });
-    secret = response;
-  } catch (e) {
-    console.log(e);
-  }
-  try {
-    const response = await stripe.value.confimCardPayment(secret, {
-      payment_method: {
-        card: card.value,
-      },
-      receipt_email: email.value,
+      body: { email: email.value },
     });
 
-    if (response.paymentIntent.status === "succeeded") {
-      success.value = true;
-      paymentIntentId.value = response.paymentIntent.id;
+    if (!clientSecret) {
+      throw new Error("Failed to create payment intent");
     }
-  } catch (e) {
-    console.log(e);
+
+    // Step 2: Confirm card payment with Stripe
+    const { paymentIntent, error: stripeError } =
+      await stripe.value.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: card.value,
+          billing_details: { email: email.value },
+        },
+      });
+
+    if (stripeError) {
+      error.value = stripeError.message;
+      return;
+    }
+
+    if (paymentIntent?.status === "succeeded") {
+      success.value = true;
+      paymentIntentId.value = paymentIntent.id;
+    } else {
+      error.value = "Payment failed. Please try again.";
+    }
+  } catch (err: any) {
+    error.value = err.message || "An error occurred. Please try again.";
+    console.error("Payment error:", err);
   } finally {
     processingPayment.value = false;
   }
 };
 
-const login = async () => {
-  if (!paymentIntentId.value) {
-    return;
-  }
+/**
+ * Navigate to login with redirect
+ */
+const navigateToLogin = () => {
   const redirectTo = `/linkWithPurchase/${paymentIntentId.value}`;
-  await navigateTo(`/login?redirectTo=${redirectTo}`);
+  navigateTo(`/login?redirectTo=${redirectTo}`);
 };
 
+/**
+ * Setup script on mount
+ */
 useHead({
   script: [
     {
       src: "https://js.stripe.com/v3/",
-      onload: setupStripe,
+      async: true,
+      onload: initializeStripe,
     },
   ],
+});
+
+// Cleanup on unmount
+onBeforeUnmount(() => {
+  if (card.value) {
+    card.value.destroy();
+  }
 });
 </script>
